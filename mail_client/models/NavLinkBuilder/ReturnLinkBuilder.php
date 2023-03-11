@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace models\NavLinkBuilder;
 
 class ReturnLinkBuilder extends NavLinkBuilder {
-    public $scheme;
+    private $scheme;
     private $host;
     private $uri;
 
