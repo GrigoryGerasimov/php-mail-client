@@ -1,8 +1,8 @@
 <?php
-declare(strict_styles=1);
+declare(strict_types=1);
 
 namespace models\MailClient\interfaces;
 
-interface IMailClient {
+interface IBuiltinClient {
     public function send(string $to, string $subject, string $message): void;
 }
