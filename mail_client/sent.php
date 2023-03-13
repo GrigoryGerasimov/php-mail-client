@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
+error_reporting(E_ALL);
 require_once("spl_autoload.php");
 
 use models\NavLinkBuilder\ReturnLinkBuilder;
+use models\MailClient\{MailClient, ClientTypes};
+use shared\exceptions\{InvalidMailException, EmptySubjectException,EmptyMessageException};
 
 [
     "REQUEST_SCHEME" => $REQUEST_SCHEME,
@@ -11,8 +14,19 @@ use models\NavLinkBuilder\ReturnLinkBuilder;
 ] = $_SERVER;
 
 $navLinkBack = new ReturnLinkBuilder($REQUEST_SCHEME, $HTTP_HOST, $REQUEST_URI);
-    
-define("navLinkBack", $navLinkBack->build("sent.php"));
+
+try {
+    $mailClient = new MailClient(ClientTypes::BUILT_IN, $_POST);
+    $mailClient->trigger();
+} catch (InvalidMailException $exception) {
+    throw new InvalidMailException("");
+} catch (EmptySubjectException $exception) {
+    throw new EmptySubjectException("");
+} catch (EmptyMessageException $exception) {
+    throw new EmptyMessageException("");
+} catch (\Throwable $exception) {
+    throw $exception;
+}
 
 ?>
 
@@ -29,6 +43,6 @@ define("navLinkBack", $navLinkBack->build("sent.php"));
     </head>
     <body class="w-screen h-screen flex flex-col justify-center items-center text-3xl">
         <h1 class="w-fit">Your email has been successfully sent!</h1>
-        <a href="<?php echo navLinkBack?>" class="w-fit my-[150px] self-center hover:font-semibold">Back</a>
+        <a href="<?php echo $navLinkBack->build("sent.php")?>" class="w-fit my-[150px] self-center hover:font-semibold">Back</a>
     </body>
 </html>
