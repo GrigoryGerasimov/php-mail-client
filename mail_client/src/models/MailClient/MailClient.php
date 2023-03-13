@@ -47,9 +47,6 @@ final class MailClient {
     }
 
     private function __clone() {}
-    private function __sleep() {}
-    private function __wakeup() {}
-    private function __serialize() {}
 
     public function getCurrentClientType(): ClientTypes {
         return $this->clientType;
