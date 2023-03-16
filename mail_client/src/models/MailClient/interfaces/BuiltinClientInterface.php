@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\MailClient\interfaces;
+namespace mcl\models\MailClient\interfaces;
 
-interface IBuiltinClient {
+interface BuiltinClientInterface 
+{
     public function send(string $to, string $subject, string $message): void;
 }

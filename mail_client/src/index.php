@@ -14,15 +14,15 @@
             <form action="sent.php" method="POST" class="w-[50%] h-[50%] flex flex-col">
                 <section class="my-[10px] flex flex-row wrap">
                     <label for="from" class="mr-[30px]">From</label>
-                    <input type="email" id="from" name="from" class="flex-grow px-[20px] appearance-none outline-none border-b"/>
+                    <input type="email" id="from" name="from" class="flex-grow px-[20px] appearance-none outline-none border-b" required/>
                 </section>
                 <section class="my-[10px] flex flex-row wrap">
                     <label for="to" class="mr-[30px]">To</label>
-                    <input type="email" id="to" name="to" class="flex-grow px-[20px] appearance-none outline-none border-b"/>
+                    <input type="email" id="to" name="to" class="flex-grow px-[20px] appearance-none outline-none border-b" required/>
                 </section>
                 <section class="my-[10px] flex flex-row wrap">
-                    <label for="reply-to" class="mr-[30px]">Reply To</label>
-                    <input type="email" id="reply-to" name="reply-to" class="flex-grow px-[20px] appearance-none outline-none border-b"/>
+                    <label for="replyTo" class="mr-[30px]">Reply To</label>
+                    <input type="email" id="replyTo" name="replyTo" class="flex-grow px-[20px] appearance-none outline-none border-b"/>
                 </section>
                 <section class="my-[10px] flex flex-row wrap">
                     <label for="cc" class="mr-[30px]">CC</label>

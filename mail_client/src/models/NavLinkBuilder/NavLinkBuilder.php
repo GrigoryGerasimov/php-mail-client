@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\NavLinkBuilder;
-use models\NavLinkBuilder\interfaces\ILinkBuilder;
+namespace mcl\models\NavLinkBuilder;
 
-abstract class NavLinkBuilder implements ILinkBuilder{
+use mcl\models\NavLinkBuilder\interfaces\LinkBuilderInterface;
+
+abstract class NavLinkBuilder implements LinkBuilderInterface
+{
     abstract public function build(string $pageBaseName): string;
 }

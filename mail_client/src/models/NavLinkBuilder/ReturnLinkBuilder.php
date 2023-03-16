@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\NavLinkBuilder;
+namespace mcl\models\NavLinkBuilder;
 
-class ReturnLinkBuilder extends NavLinkBuilder {
+class ReturnLinkBuilder extends NavLinkBuilder 
+{
     private $scheme;
     private $host;
     private $uri;
