@@ -18,23 +18,6 @@ use mcl\shared\exceptions\{InvalidMailException, EmptySubjectException,EmptyMess
 
 $navLinkBack = new ReturnLinkBuilder($REQUEST_SCHEME, $HTTP_HOST, $REQUEST_URI);
 
-try {
-    $mailClient = new MailClient(ClientTypesEnum::BUILT_IN, $_POST);
-    $mailClient->trigger();
-} catch (InvalidMailException | EmptySubjectException | EmptyMessageException $exception) {
-    echo $exception->message();
-    exit(1);
-} catch (\Throwable $exception) {
-    throw $exception;
-}
-
-function generalExceptionHandler(\Throwable $exception): string 
-{
-    return "Oops, the app has just crushed due to the following issue: ".$exception->getMessage();
-};
-
-set_exception_handler('generalExceptionHandler');
-
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +32,27 @@ set_exception_handler('generalExceptionHandler');
         <title>Mail client in PHP</title>
     </head>
     <body class="w-screen h-screen flex flex-col justify-center items-center text-3xl">
-        <h1 class="w-fit">Your email has been successfully sent!</h1>
-        <a href="<?php echo $navLinkBack->build("sent.php")?>" class="w-fit my-[150px] self-center hover:font-semibold">Back</a>
+        <?php
+        
+        try {       
+            $mailClient = new MailClient(ClientTypesEnum::BUILT_IN, $_POST);
+            $mailClient->trigger();
+            echo "<h1 class='w-fit'>Your email has been successfully sent!</h1>";
+        } catch (InvalidMailException | EmptySubjectException | EmptyMessageException $exception) {
+            echo "<h1 class='w-fit'>".$exception->message()."</h1>";
+        } catch (\Throwable $exception) {
+            throw $exception;
+        } finally {
+            echo "<a href=".$navLinkBack->build("sent.php")." class='w-fit my-[150px] self-center hover:font-semibold'>Back</a>";
+        }
+
+        function generalExceptionHandler(\Throwable $exception): void 
+        {
+            echo "<h1 class='w-fit'>Oops, the app has just crushed due to the following issue: ".$exception->getMessage()."</h1>";
+        };
+
+        set_exception_handler('generalExceptionHandler');
+
+        ?>
     </body>
 </html>
