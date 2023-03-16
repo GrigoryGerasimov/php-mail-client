@@ -1,11 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\MailClient;
-use models\MailClient\BuiltinClient\BuiltinClient;
-use models\MailClient\PHPMailerClient\PHPMailerClient;
+namespace mcl\models\MailClient;
 
-final class MailClient {
+use mcl\models\MailClient\BuiltinClient\BuiltinClient;
+use mcl\models\MailClient\PHPMailerClient\PHPMailerClient;
+use \PHPMailer\PHPMailer\PHPMailer;
+use mcl\shared\exceptions\{InvalidMailException, EmptySubjectException, EmptyMessageException};
+
+final class MailClient 
+{
     protected $clientType;
     protected $to;
     protected $from;
@@ -17,7 +22,7 @@ final class MailClient {
 
     private $headers;
 
-    final public function __construct(ClientTypes $type, array|object $mailData) {
+    final public function __construct(ClientTypesEnum $type, array|object $mailData) {
         $this->clientType = $type;
         [
             "to" => $this->to,
@@ -28,7 +33,7 @@ final class MailClient {
             "subject" => $this->subject,
             "message" => $this->message
         ] = $mailData;
-        if (ClientTypes::BUILT_IN) {
+        if (ClientTypesEnum::BUILT_IN) {
             $this->headers = [
                 "From" => $this->from,
                 "CC" => $this->cc,
@@ -48,28 +53,43 @@ final class MailClient {
 
     private function __clone() {}
 
-    public function getCurrentClientType(): ClientTypes {
+    public function getCurrentClientType(): ClientTypesEnum {
         return $this->clientType;
     }
 
+    private function validateData() {
+        if (!isset($this->to) || trim($this->to) === "" || !isset($this->from) || trim($this->from) === "") {
+            throw new InvalidMailException();
+        } elseif (!isset($this->subject) || trim($this->subject) === "") {
+            throw new EmptySubjectException();
+        } elseif (!isset($this->message) || trim($this->message) === "") {
+            throw new EmptyMessageException();
+        }
+    }
+
     public function trigger(): void {
-        switch ($this->clientType) {
-            case ClientTypes::BUILT_IN: {
-                $builtIn = new BuiltinClient($this->headers);
-                $builtIn->send($this->to, $this->subject, $this->message);
-            };
-            case ClientTypes::THIRD_SIDE: {
-                $phpMailer = new PHPMailerClient();
-                $phpMailer->send(
-                    $this->from,
-                    $this->to,
-                    $this->replyTo,
-                    $this->cc,
-                    $this->bcc,
-                    $this->subject,
-                    $this->message
-                );
-            };
+        try {
+            $this->validateData();
+            switch ($this->clientType) {
+                case ClientTypesEnum::BUILT_IN: {
+                    $builtIn = new BuiltinClient($this->headers);
+                    $builtIn->send($this->to, $this->subject, $this->message);
+                };
+                case ClientTypesEnum::THIRD_SIDE: {
+                    $phpMailer = new PHPMailerClient(new PHPMailer());
+                    $phpMailer->send(
+                        $this->from,
+                        $this->to,
+                        $this->replyTo,
+                        $this->cc,
+                        $this->bcc,
+                        $this->subject,
+                        $this->message
+                    );
+                };
+            }
+        } catch(\Throwable $e) {
+            throw $e;
         }
     }
 }

@@ -1,11 +1,14 @@
 <?php
-declare(strict_types=1);
-error_reporting(E_ALL);
-require_once("spl_autoload.php");
 
-use models\NavLinkBuilder\ReturnLinkBuilder;
-use models\MailClient\{MailClient, ClientTypes};
-use shared\exceptions\{InvalidMailException, EmptySubjectException,EmptyMessageException};
+declare(strict_types=1);
+
+error_reporting(E_ALL);
+
+require_once("../vendor/autoload.php");
+
+use mcl\models\NavLinkBuilder\ReturnLinkBuilder;
+use mcl\models\MailClient\{MailClient, ClientTypesEnum};
+use mcl\shared\exceptions\{InvalidMailException, EmptySubjectException,EmptyMessageException};
 
 [
     "REQUEST_SCHEME" => $REQUEST_SCHEME,
@@ -16,17 +19,21 @@ use shared\exceptions\{InvalidMailException, EmptySubjectException,EmptyMessageE
 $navLinkBack = new ReturnLinkBuilder($REQUEST_SCHEME, $HTTP_HOST, $REQUEST_URI);
 
 try {
-    $mailClient = new MailClient(ClientTypes::BUILT_IN, $_POST);
+    $mailClient = new MailClient(ClientTypesEnum::BUILT_IN, $_POST);
     $mailClient->trigger();
-} catch (InvalidMailException $exception) {
-    throw new InvalidMailException("");
-} catch (EmptySubjectException $exception) {
-    throw new EmptySubjectException("");
-} catch (EmptyMessageException $exception) {
-    throw new EmptyMessageException("");
+} catch (InvalidMailException | EmptySubjectException | EmptyMessageException $exception) {
+    echo $exception->message();
+    exit(1);
 } catch (\Throwable $exception) {
     throw $exception;
 }
+
+function generalExceptionHandler(\Throwable $exception): string 
+{
+    return "Oops, the app has just crushed due to the following issue: ".$exception->getMessage();
+};
+
+set_exception_handler('generalExceptionHandler');
 
 ?>
 

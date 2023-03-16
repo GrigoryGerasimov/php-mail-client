@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\MailClient;
+namespace mcl\models\MailClient;
 
-enum ClientTypes {
+enum ClientTypesEnum
+{
     case BUILT_IN;
     case THIRD_SIDE;
 }

@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\NavLinkBuilder\interfaces;
+namespace mcl\models\NavLinkBuilder\interfaces;
 
-interface ILinkBuilder {
+interface LinkBuilderInterface 
+{
     public function build(string $pageBaseName);
 }

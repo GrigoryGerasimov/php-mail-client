@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
-namespace models\MailClient\BuiltinClient;
-use models\MailClient\interfaces\IBuiltinClient;
+namespace mcl\models\MailClient\BuiltinClient;
 
-class BuiltinClient implements IBuiltinClient {
+use mcl\models\MailClient\interfaces\BuiltinClientInterface;
+
+class BuiltinClient implements BuiltinClientInterface
+{
     private $headers;
 
     public function __construct(mixed $headers) {

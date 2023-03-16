@@ -3,7 +3,7 @@
     "description": "mail client in php",
     "autoload": {
         "psr-4": {
-            "Rehor\\MailClient\\": "src/"
+            "mcl\\": "src/"
         }
     },
     "authors": [
